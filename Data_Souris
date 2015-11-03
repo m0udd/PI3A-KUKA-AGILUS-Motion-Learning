@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+
+        static TDx.TDxInput.Device device;
+
+        static double min_X = 0;
+        static double min_Y = 0;
+        static double min_Z = 0;
+        static double max_X = 0;
+        static double max_Y = 0;
+        static double max_Z = 0;
+
+        static void Main(string[] args)
+        {
+
+            Console.WriteLine("Programm Start ....");
+
+            device = new TDx.TDxInput.Device();
+            device.Connect();
+            bool test = true;
+
+
+            while (test)
+            {
+
+                var translation = device.Sensor.Translation;
+                var rotation = device.Sensor.Rotation;
+                // diviser translation et rotation par 80 ou utiliser le racinecar de 3*80²
+
+               // translation.X = translation.X / 2200;
+               // translation.Y = translation.Y / 2168;
+               // translation.Z = translation.Z / 2065;
+
+           /*     rotation.X = rotation.X / 80;
+                rotation.Y = rotation.Y / 80;
+                rotation.Z = rotation.Z / 80;*/
+
+                Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
+                Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
+
+                
+
+                // RECUPERER VALEUR MIN ET MAX POUR CHAQUE TRANSLATION
+
+               
+                
+                max_X = Math.Max(max_X, translation.X);
+                Console.WriteLine("Max X : " + max_X);
+
+                min_X = Math.Min(min_X, translation.X);
+                Console.WriteLine("Min X : " + min_X);
+
+
+              
+                max_Y = Math.Max(max_Y, translation.Y);
+                Console.WriteLine("Max Y : " + max_Y);
+
+                min_Y = Math.Min(min_Y, translation.Y);
+                Console.WriteLine("Min Y : " + min_Y);
+
+
+               
+                max_Z = Math.Max(max_Z, translation.Z);
+                Console.WriteLine("Max Z : " + max_Z);
+
+                min_Z = Math.Min(min_Z, translation.Z);
+                Console.WriteLine("Min Z : " + min_Z);
+
+                //    ConsoleKeyInfo info;
+                //    info = Console.ReadKey();
+                /*        if (info.KeyChar == 'q')
+                         {
+                             test = false;
+                         }*/
+
+
+
+                System.Threading.Thread.Sleep(50);
+            }
+
+            Console.WriteLine("Programm End, press a key to exit....");
+            Console.ReadKey();
+
+        }
+    }
+}
