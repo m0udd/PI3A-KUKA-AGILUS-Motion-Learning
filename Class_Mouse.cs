@@ -84,7 +84,7 @@ namespace Projet_Kuka
         // Fonction permettant de récupérer les données de mouvement de la souris
         public void Data_Mouse()
         {
-            Console.WriteLine("Programm Start ....");
+            
 
             device = new TDx.TDxInput.Device();
             device.Connect();
@@ -113,7 +113,6 @@ namespace Projet_Kuka
                 Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
 
 
-
                 // On appelle la fonction Move de la Class_Kuka_Manager
 
                 //my_kuka.Kuka_Move(translation, rotation);
@@ -122,9 +121,42 @@ namespace Projet_Kuka
                 System.Threading.Thread.Sleep(50);
             }
 
+
+            my_kuka.Stop();
+        }
+
+
+        public void Choix_Mode()
+        {
+
+            Console.WriteLine("Programm Start ....");
+
+            Console.WriteLine("..... MENU.....");
+            Console.WriteLine("[1] : Move the Kuka ");
+            Console.WriteLine("[2] : Execute mouvement");
+            Console.WriteLine("[q] : Exit");
+
+            var key = Console.ReadKey();
+
+            Console.WriteLine(" key : " + key.KeyChar);
+
+            switch (key.KeyChar)
+            {
+                case '1':
+                    Console.WriteLine("Apprendre un point à Kuka");
+                    Data_Mouse();
+                    break;
+                case '2':
+                    Console.WriteLine("Execution des points enregistré");
+                    break;
+                case 'q':
+                    Console.WriteLine("Wait to End....");
+                    break;
+            }
+
             Console.WriteLine("Programm End, press a key to exit....");
             Console.ReadKey();
-            my_kuka.Stop();
+
         }
     }
 }
