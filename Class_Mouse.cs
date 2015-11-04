@@ -97,8 +97,36 @@ namespace Projet_Kuka
         {
             my_kuka.StartMotion();
 
+            Console.WriteLine("coucou");
             while (start)
             {
+
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey();
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.A:
+                            Console.WriteLine("J'enregiste le point");
+                            my_kuka.Enregistrer_Point();
+                            break;
+                        case ConsoleKey.B:
+                            Console.WriteLine("Demande ouverture pince");
+                            my_kuka.Open_Gripper();
+                            break;
+                        case ConsoleKey.C:
+                            Console.WriteLine("Demande de fermeture pince");
+                            my_kuka.Close_Gripper();
+                            break;
+                        case ConsoleKey.D:
+                            Console.WriteLine("Je quite la boucle");
+                            start = false;
+                            break;
+                        default:
+                            Console.WriteLine("Je ne connais pas la touche");
+                            break;
+                    }
+                }
                 var translation = device.Sensor.Translation;
                 var rotation = device.Sensor.Rotation;
 
@@ -112,14 +140,21 @@ namespace Projet_Kuka
                 translation.Y = translation.Y / 2832;
                 translation.Z = translation.Z / 2815;
 
-                Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
-                Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
+                //if(translation.X  >= 1)  (translation.Y >=1 )|| (translation.Z >= 1)
+                //{
+                //    exit(0);
+                //}
+
+
+
+               // Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
+               // Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
 
                 // On appelle la fonction Move de la Class_Kuka_Manager
 
                 my_kuka.Kuka_Move(translation, rotation);
                 
-                Thread.Sleep(50);
+                Thread.Sleep(10);
             }
              my_kuka.StopMotion();
         }
@@ -130,6 +165,7 @@ namespace Projet_Kuka
             device = new TDx.TDxInput.Device();
             device.Connect();
 
+            Console.WriteLine("start thread");
             // je démarre le thread réalisant la boucle de manipulation de la souris.
             myThread.Start();
 
@@ -155,18 +191,19 @@ namespace Projet_Kuka
                 case '1':
                     Console.WriteLine("Apprendre un point à Kuka");
                     Data_Mouse();
+
                     break;
                 case '2':
                     Console.WriteLine("Execution des points enregistré");
                     break;
                 case 'q':
-                    Console.WriteLine("Wait to End....");
+                    Console.WriteLine("Programm End, press a key to exit....");
+                    Console.ReadKey();
+                    break;
+                default:
+                    Console.WriteLine("Key non reconnue");
                     break;
             }
-
-            Console.WriteLine("Programm End, press a key to exit....");
-            Console.ReadKey();
-
         }
     }
 }
