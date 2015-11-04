@@ -18,7 +18,7 @@ namespace Projet_Kuka
 
             mouse = new Class_Mouse(kuka);
 
-            mouse.Data_Mouse();
+            mouse.Choix_Mode();
         }
     }
 }
