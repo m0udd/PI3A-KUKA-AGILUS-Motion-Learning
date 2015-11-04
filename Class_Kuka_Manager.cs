@@ -39,22 +39,8 @@ namespace Projet_Kuka
 
 
         // Fonction permettant d'utiliser les translations et rotations de la souris et de les envoyer au Kuka
-        public void Kuka_Move(TDx.TDxInput.IVector3D translation, TDx.TDxInput.AngleAxis rotation)
+        public void Kuka_Move(TDx.TDxInput.Vector3D translation, TDx.TDxInput.AngleAxis rotation)
         {
-           // robot.StartRelativeMovement();
-            // List<CartesianPosition> position = new List<CartesianPosition>();
-            /*
-            double x, y, z;
-            
-           
-
-
-                x = robot.GetCurrentPosition().X;
-                y = robot.GetCurrentPosition().Y;
-                z = robot.GetCurrentPosition().Z;
-
-                Console.WriteLine("position x : " + x + ", position y : " + y + ", position z : " + z);
-            */
             Console.WriteLine(" je bouge");
 
             // on recupere les valeurs des translations et rotations de la souris 3D
@@ -71,8 +57,6 @@ namespace Projet_Kuka
 
             // on envoi ces valeurs au Kuka
             robot.SetRelativeMovement(Position);
-
-           // robot.StopRelativeMovement();
         }
     }
 
