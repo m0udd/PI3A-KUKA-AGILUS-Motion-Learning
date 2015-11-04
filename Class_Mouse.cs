@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NLX.Robot.Kuka.Controller;
+using System.Threading;
 
 namespace Projet_Kuka
 {
@@ -11,13 +12,23 @@ namespace Projet_Kuka
     {
         static TDx.TDxInput.Device device;
         static Class_Kuka_Manager my_kuka;
+        static bool start = true;
+        static Thread myThread;
 
         // Constructeur de la Class_Mouse où on récupère l'instance de la Class_Kuka_Manager que l'on va utiliser
         public Class_Mouse(Class_Kuka_Manager kuka)
         {
             my_kuka = kuka;
+            myThread = new Thread(new ThreadStart(Loop_Mouse));
         }
 
+        ~Class_Mouse()
+        {
+            if (myThread.IsAlive)
+            {
+                myThread.Join();
+            }
+        }
 
         public TDx.TDxInput.Vector3D Suppimmer_Bruit_Translation(TDx.TDxInput.Vector3D translation)
         {
@@ -81,30 +92,22 @@ namespace Projet_Kuka
             return rotation;
         }
 
-        // Fonction permettant de récupérer les données de mouvement de la souris
-        public void Data_Mouse()
+
+        public void Loop_Mouse()
         {
-            
+            my_kuka.StartMotion();
 
-            device = new TDx.TDxInput.Device();
-            device.Connect();
-            bool test = true;
-
-            //my_kuka.Start();
-
-            while (test)
+            while (start)
             {
                 var translation = device.Sensor.Translation;
                 var rotation = device.Sensor.Rotation;
-
-
 
                 // Appel des fonctions de suppression des bruits
                 translation = Suppimmer_Bruit_Translation(translation);
                 rotation = Supprimer_Bruit_Rotation(rotation);
 
                 // diviser translation pour normaliser les valeurs à envoyer au Kuka
-                // ces valeurs sont déterminer manuellement par l'appel du min et du max.
+                // ces valeurs sont déterminer manuellement par l'appel du min et du max. NORMALISATION
                 translation.X = translation.X / 2729;
                 translation.Y = translation.Y / 2832;
                 translation.Z = translation.Z / 2815;
@@ -112,17 +115,24 @@ namespace Projet_Kuka
                 Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
                 Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
 
-
                 // On appelle la fonction Move de la Class_Kuka_Manager
 
-                //my_kuka.Kuka_Move(translation, rotation);
-                //Console.WriteLine(" j'ai bougé");
-
-                System.Threading.Thread.Sleep(50);
+                my_kuka.Kuka_Move(translation, rotation);
+                
+                Thread.Sleep(50);
             }
+             my_kuka.StopMotion();
+        }
 
+        // Fonction permettant de récupérer les données de mouvement de la souris
+        public void Data_Mouse()
+        {
+            device = new TDx.TDxInput.Device();
+            device.Connect();
 
-            my_kuka.Stop();
+            // je démarre le thread réalisant la boucle de manipulation de la souris.
+            myThread.Start();
+
         }
 
 
