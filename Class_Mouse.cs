@@ -112,11 +112,15 @@ namespace Projet_Kuka
                             break;
                         case ConsoleKey.B:
                             Console.WriteLine("Demande ouverture pince");
+                            my_kuka.StopMotion();
                             my_kuka.Open_Gripper();
+                            my_kuka.StartMotion();
                             break;
                         case ConsoleKey.C:
                             Console.WriteLine("Demande de fermeture pince");
+                            my_kuka.StopMotion();
                             my_kuka.Close_Gripper();
+                            my_kuka.StartMotion();
                             break;
                         case ConsoleKey.D:
                             Console.WriteLine("Je quite la boucle");
@@ -127,34 +131,38 @@ namespace Projet_Kuka
                             break;
                     }
                 }
-                var translation = device.Sensor.Translation;
-                var rotation = device.Sensor.Rotation;
+                else
+                {
+                    var translation = device.Sensor.Translation;
+                    var rotation = device.Sensor.Rotation;
 
-                // Appel des fonctions de suppression des bruits
-                translation = Suppimmer_Bruit_Translation(translation);
-                rotation = Supprimer_Bruit_Rotation(rotation);
+                    // Appel des fonctions de suppression des bruits
+                    translation = Suppimmer_Bruit_Translation(translation);
+                    rotation = Supprimer_Bruit_Rotation(rotation);
 
-                // diviser translation pour normaliser les valeurs à envoyer au Kuka
-                // ces valeurs sont déterminer manuellement par l'appel du min et du max. NORMALISATION
-                translation.X = translation.X / 2729;
-                translation.Y = translation.Y / 2832;
-                translation.Z = translation.Z / 2815;
+                    // diviser translation pour normaliser les valeurs à envoyer au Kuka
+                    // ces valeurs sont déterminer manuellement par l'appel du min et du max. NORMALISATION
+                    translation.X = translation.X / 2729;
+                    translation.Y = translation.Y / 2832;
+                    translation.Z = translation.Z / 2815;
 
-                //if(translation.X  >= 1)  (translation.Y >=1 )|| (translation.Z >= 1)
-                //{
-                //    exit(0);
-                //}
+                    //if(translation.X  >= 1)  (translation.Y >=1 )|| (translation.Z >= 1)
+                    //{
+                    //    exit(0);
+                    //}
 
 
 
-               // Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
-               // Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
+                    // Console.WriteLine("Translation : " + translation.X + ";" + translation.Y + ";" + translation.Z);
+                    // Console.WriteLine("Rotation : " + rotation.X + ";" + rotation.Y + ";" + rotation.Z);
 
-                // On appelle la fonction Move de la Class_Kuka_Manager
+                    // On appelle la fonction Move de la Class_Kuka_Manager
 
-                my_kuka.Kuka_Move(translation, rotation);
-                
-                Thread.Sleep(10);
+                    my_kuka.Kuka_Move(translation, rotation);
+
+                    Thread.Sleep(10);
+                }
+
             }
              my_kuka.StopMotion();
         }
@@ -195,6 +203,8 @@ namespace Projet_Kuka
                     break;
                 case '2':
                     Console.WriteLine("Execution des points enregistré");
+                    my_kuka.Mode_Move();
+
                     break;
                 case 'q':
                     Console.WriteLine("Programm End, press a key to exit....");

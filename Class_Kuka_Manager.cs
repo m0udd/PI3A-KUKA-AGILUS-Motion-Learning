@@ -12,14 +12,20 @@ namespace Projet_Kuka
 {
     class Class_Kuka_Manager
     {
+        XMLManager xml = new XMLManager();
+        List<XMLManager.Target> ListOfTarget = new List<XMLManager.Target>();
+
+
+        // gripper à false = OUVERT
+        bool Gripper = false;
         RobotController robot = null;
-        bool debug = false;
+        bool debug = true;
         int MIN_X = 490 ;
         int MAX_X = 950;
-        int MIN_Y = -50;
+        int MIN_Y = -500;
         int MAX_Y = 650;
         int MIN_Z = 90;
-        int MAX_Z = 540;
+        int MAX_Z = 700;
 
         // Constructeur permettant de ce connecter au robot
         public Class_Kuka_Manager()
@@ -30,7 +36,7 @@ namespace Projet_Kuka
                 try
                 {
                     robot.Connect("192.168.1.1");
-                    Console.WriteLine("coonected");
+                    Console.WriteLine("connected");
                 }
                 catch (IOException e)
                 {
@@ -38,6 +44,17 @@ namespace Projet_Kuka
                 }
             }
 
+        }
+
+        public void Close_Connection()
+        {
+            if (debug){
+                // voir s'il existe une fonction pour disconnect le robot
+            }
+            else
+            {
+                Console.WriteLine("je me déconnect du robot");
+            }
         }
 
         // Fonction pour Start la connexion avec le Kuka
@@ -99,6 +116,7 @@ namespace Projet_Kuka
             if (debug)
             {
                 robot.OpenGripper();
+                Gripper = false;
             }
             else
             {
@@ -112,6 +130,7 @@ namespace Projet_Kuka
             if (debug)
             {
                 robot.CloseGripper();
+                Gripper = true;
             }
             else
             {
@@ -119,22 +138,189 @@ namespace Projet_Kuka
             }           
         }
 
+        public void Save_Point()
+        {
+            xml.addPoints(ListOfTarget);
+        }
+
         public void Enregistrer_Point()
         {
+
             if (debug)
             {
+                XMLManager.Target tmp = new XMLManager.Target();
 
-            }else
+                var position = robot.GetCurrentPosition();
+                tmp.x = position.X;
+                tmp.y = position.Y;
+                tmp.z = position.Z;
+                tmp.a = position.A;
+                tmp.b = position.B;
+                tmp.c = position.C;
+                tmp.gripperState = Gripper;
+
+                ListOfTarget.Add(tmp);
+
+            }
+            else
             {
                 Console.WriteLine("Je suis dans la fonction me permettant d'enregistrer le point");
             }
         }
 
+        public void Near_Piece()
+        {
+            List<CartesianPosition> position = new List<CartesianPosition>();
+            position.Add(new CartesianPosition
+            {
+                X = 512.07,
+                Y = 145.51,
+                Z = 214.84,
+                A = -83.86,
+                B = -79.63,
+                C = -1.77,
+            });
+
+            if (debug)
+            {
+                robot.PlayTrajectory(position);
+            }
+            else
+            {
+                Console.WriteLine(" je prend la piece");
+            }
+        }
+
+        public void Pick_Up_Piece()
+        {
+            List<CartesianPosition> position = new List<CartesianPosition>();
+            position.Add(new CartesianPosition
+            {
+                X = 512.07,
+                Y = 232.50,
+                Z = 214.84,
+                A = -83.86,
+                B = -79.63,
+                C = -1.77,
+            });
+
+            if (debug)
+            {
+                robot.PlayTrajectory(position);
+                Close_Gripper();
+            }
+            else
+            {
+                Console.WriteLine(" je prend la piece");
+            }           
+        }
+
+        public void Up_Piece()
+        {
+            List<CartesianPosition> position = new List<CartesianPosition>();
+            position.Add(new CartesianPosition
+            {
+                X = 512.07,
+                Y = 232.50,
+                Z = 460.29,
+                A = -83.86,
+                B = -79.63,
+                C = -1.77,
+            });
+            if (debug)
+            {
+                robot.PlayTrajectory(position);
+            }
+            else
+            {
+                Console.WriteLine("Je suis en position");
+                Console.WriteLine(position);
+            }
+        }
+
+        public void Pose_Piece()
+        {
+            List<CartesianPosition> position = new List<CartesianPosition>();
+            position.Add(new CartesianPosition
+            {
+                X = 937.01,
+                Y = -265.49,
+                Z = 100.69,
+                A = -95.68,
+                B = 2.19,
+                C = -89.63,
+            });
+            if (debug)
+            {
+                robot.PlayTrajectory(position);
+            }
+            else
+            {
+
+            }
+        }
+
+        public void Up_Pose_Piece()
+        {
+            List<CartesianPosition> position = new List<CartesianPosition>();
+            position.Add(new CartesianPosition
+            {
+                X = 937.01,
+                Y = -265.49,
+                Z = 500.69,
+                A = -95.68,
+                B = 2.19,
+                C = -89.63,
+            });
+            if (debug)
+            {
+                robot.PlayTrajectory(position);
+            }
+            else
+            {
+
+            }
+        }
+
+        public void Mode_Move()
+        {
+            if (debug)
+            {
+                Open_Gripper();
+                Near_Piece();
+                Pick_Up_Piece();
+                Up_Piece();
+                Up_Pose_Piece();
+                /*
+                position.Add(new CartesianPosition
+                {
+                    X = 937.01,
+                    Y = -265.49,
+                    Z = 100.69,
+                    A = -95.68,
+                    B = 2.19,
+                    C = -89.63,
+                });
+                robot.PlayTrajectory(position);
+                */
+
+
+               // List<XMLManager.Target> List = xml.GetAllPoints();
+
+
+            }
+            else
+            {
+                Console.WriteLine("Mode move");
+                Pick_Up_Piece();
+                Up_Piece();
+                Console.ReadKey();
+            }
+        }
 
         // Fonction permettant d'utiliser les translations et rotations de la souris et de les envoyer au Kuka
         public void Kuka_Move(TDx.TDxInput.Vector3D translation, TDx.TDxInput.AngleAxis rotation)
         {
-
             if (debug)
             {
                 Console.WriteLine("je suis dans kuka move");
