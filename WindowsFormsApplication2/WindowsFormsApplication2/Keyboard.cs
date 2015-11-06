@@ -65,6 +65,9 @@ namespace WindowsFormsApplication2
             }
         }
 
+        private void gripperOpened_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

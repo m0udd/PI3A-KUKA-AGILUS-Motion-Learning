@@ -21,7 +21,7 @@ namespace WindowsFormsApplication2
         {
       
             RobotController robot = new RobotController();
-            Form1 parentForm = Application.OpenForms["Form1"] as Form1;
+            IndexConnect parentForm = Application.OpenForms["Form1"] as IndexConnect;
             //robot.Connect(parentForm.ipAddress);
             //Console.WriteLine(AccessForm2.m_keyboard);
 

@@ -75,13 +75,14 @@
             // gripperOpened
             // 
             this.gripperOpened.Image = ((System.Drawing.Image)(resources.GetObject("gripperOpened.Image")));
-            this.gripperOpened.Location = new System.Drawing.Point(284, 138);
+            this.gripperOpened.Location = new System.Drawing.Point(470, 12);
             this.gripperOpened.Name = "gripperOpened";
             this.gripperOpened.Size = new System.Drawing.Size(200, 200);
             this.gripperOpened.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.gripperOpened.TabIndex = 4;
             this.gripperOpened.TabStop = false;
             this.gripperOpened.Visible = false;
+            this.gripperOpened.Click += new System.EventHandler(this.gripperOpened_Click);
             // 
             // Keyboard
             // 
