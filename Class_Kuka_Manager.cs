@@ -17,7 +17,7 @@ namespace Projet_Kuka
 
 
         // gripper à false = OUVERT
-        bool Gripper = false;
+        bool Status_Gripper = false;
         RobotController robot = null;
         bool debug = true;
         int MIN_X = 490 ;
@@ -157,7 +157,7 @@ namespace Projet_Kuka
                 tmp.a = position.A;
                 tmp.b = position.B;
                 tmp.c = position.C;
-                tmp.gripperState = Gripper;
+                tmp.gripperState = robot.IsGripperOpen();
 
                 ListOfTarget.Add(tmp);
 
@@ -168,113 +168,148 @@ namespace Projet_Kuka
             }
         }
 
-        public void Near_Piece()
-        {
-            List<CartesianPosition> position = new List<CartesianPosition>();
-            position.Add(new CartesianPosition
-            {
-                X = 512.07,
-                Y = 145.51,
-                Z = 214.84,
-                A = -83.86,
-                B = -79.63,
-                C = -1.77,
-            });
+        //public void Near_Piece()
+        //{
+        //    List<CartesianPosition> position = new List<CartesianPosition>();
+        //    position.Add(new CartesianPosition
+        //    {
+        //        X = 512.07,
+        //        Y = 145.51,
+        //        Z = 214.84,
+        //        A = -83.86,
+        //        B = -79.63,
+        //        C = -1.77,
+        //    });
 
+        //    if (debug)
+        //    {
+        //        robot.PlayTrajectory(position);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine(" je prend la piece");
+        //    }
+        //}
+
+        //public void Pick_Up_Piece()
+        //{
+        //    List<CartesianPosition> position = new List<CartesianPosition>();
+        //    position.Add(new CartesianPosition
+        //    {
+        //        X = 512.07,
+        //        Y = 232.50,
+        //        Z = 214.84,
+        //        A = -83.86,
+        //        B = -79.63,
+        //        C = -1.77,
+        //    });
+
+        //    if (debug)
+        //    {
+        //        robot.PlayTrajectory(position);
+        //        Close_Gripper();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine(" je prend la piece");
+        //    }           
+        //}
+
+        //public void Up_Piece()
+        //{
+        //    List<CartesianPosition> position = new List<CartesianPosition>();
+        //    position.Add(new CartesianPosition
+        //    {
+        //        X = 512.07,
+        //        Y = 232.50,
+        //        Z = 460.29,
+        //        A = -83.86,
+        //        B = -79.63,
+        //        C = -1.77,
+        //    });
+        //    if (debug)
+        //    {
+        //        robot.PlayTrajectory(position);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Je suis en position");
+        //        Console.WriteLine(position);
+        //    }
+        //}
+
+        //public void Pose_Piece()
+        //{
+        //    List<CartesianPosition> position = new List<CartesianPosition>();
+        //    position.Add(new CartesianPosition
+        //    {
+        //        X = 937.01,
+        //        Y = -265.49,
+        //        Z = 100.69,
+        //        A = -95.68,
+        //        B = 2.19,
+        //        C = -89.63,
+        //    });
+        //    if (debug)
+        //    {
+        //        robot.PlayTrajectory(position);
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
+
+        //public void Up_Pose_Piece()
+        //{
+        //    List<CartesianPosition> position = new List<CartesianPosition>();
+        //    position.Add(new CartesianPosition
+        //    {
+        //        X = 937.01,
+        //        Y = -265.49,
+        //        Z = 500.69,
+        //        A = -95.68,
+        //        B = 2.19,
+        //        C = -89.63,
+        //    });
+        //    if (debug)
+        //    {
+        //        robot.PlayTrajectory(position);
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
+
+        public void Execute_Move(XMLManager.Target List)
+        {
             if (debug)
             {
+                List<CartesianPosition> position = new List<CartesianPosition>();
+                position.Add(new CartesianPosition
+                {
+                    X = List.x,
+                    Y = List.y,
+                    Z = List.z,
+                    A = List.a,
+                    B = List.b,
+                    C = List.c,
+                });
+
                 robot.PlayTrajectory(position);
-            }
-            else
-            {
-                Console.WriteLine(" je prend la piece");
-            }
-        }
+                if (List.gripperState)
+                {
+                    Close_Gripper();
+                    Status_Gripper = true;
 
-        public void Pick_Up_Piece()
-        {
-            List<CartesianPosition> position = new List<CartesianPosition>();
-            position.Add(new CartesianPosition
-            {
-                X = 512.07,
-                Y = 232.50,
-                Z = 214.84,
-                A = -83.86,
-                B = -79.63,
-                C = -1.77,
-            });
+                }
+                else
+                {
+                    Open_Gripper();
+                    Status_Gripper = true;
+                }
 
-            if (debug)
-            {
-                robot.PlayTrajectory(position);
-                Close_Gripper();
-            }
-            else
-            {
-                Console.WriteLine(" je prend la piece");
-            }           
-        }
-
-        public void Up_Piece()
-        {
-            List<CartesianPosition> position = new List<CartesianPosition>();
-            position.Add(new CartesianPosition
-            {
-                X = 512.07,
-                Y = 232.50,
-                Z = 460.29,
-                A = -83.86,
-                B = -79.63,
-                C = -1.77,
-            });
-            if (debug)
-            {
-                robot.PlayTrajectory(position);
-            }
-            else
-            {
-                Console.WriteLine("Je suis en position");
-                Console.WriteLine(position);
-            }
-        }
-
-        public void Pose_Piece()
-        {
-            List<CartesianPosition> position = new List<CartesianPosition>();
-            position.Add(new CartesianPosition
-            {
-                X = 937.01,
-                Y = -265.49,
-                Z = 100.69,
-                A = -95.68,
-                B = 2.19,
-                C = -89.63,
-            });
-            if (debug)
-            {
-                robot.PlayTrajectory(position);
-            }
-            else
-            {
-
-            }
-        }
-
-        public void Up_Pose_Piece()
-        {
-            List<CartesianPosition> position = new List<CartesianPosition>();
-            position.Add(new CartesianPosition
-            {
-                X = 937.01,
-                Y = -265.49,
-                Z = 500.69,
-                A = -95.68,
-                B = 2.19,
-                C = -89.63,
-            });
-            if (debug)
-            {
-                robot.PlayTrajectory(position);
             }
             else
             {
@@ -286,11 +321,12 @@ namespace Projet_Kuka
         {
             if (debug)
             {
-                Open_Gripper();
-                Near_Piece();
-                Pick_Up_Piece();
-                Up_Piece();
-                Up_Pose_Piece();
+                //Open_Gripper();
+                //Near_Piece();
+                //Pick_Up_Piece();
+                //Up_Piece();
+                //Up_Pose_Piece();
+
                 /*
                 position.Add(new CartesianPosition
                 {
@@ -305,16 +341,18 @@ namespace Projet_Kuka
                 */
 
 
-               // List<XMLManager.Target> List = xml.GetAllPoints();
-
+                List<XMLManager.Target> List = xml.GetAllPoints();
+                for(int i = 0; i < List.Count; i++)
+                {
+                    Execute_Move(List[i]);
+                }
+               // for list.size do function Execute_Move(List[i])
+               // dans Execute_Move stocker x,y,z,a,b,c dans un List CartesianPoint -> PlayTrajectorie et regarder si Gripper est ouvert ou fermé et faire en conséquence le bon code
 
             }
             else
             {
                 Console.WriteLine("Mode move");
-                Pick_Up_Piece();
-                Up_Piece();
-                Console.ReadKey();
             }
         }
 
