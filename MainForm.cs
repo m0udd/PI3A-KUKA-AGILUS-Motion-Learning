@@ -13,6 +13,7 @@ namespace WindowsFormsApplication2
     public partial class MainForm : Form
     {
         int i = 5;
+        int x = 1234;
 
         private bool gripperState = false;
         private bool pointState = false;
@@ -22,6 +23,7 @@ namespace WindowsFormsApplication2
             //ControlBox = false;
             this.MaximizeBox = false;
             pointStateShow();
+            dataX.Text = x.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
