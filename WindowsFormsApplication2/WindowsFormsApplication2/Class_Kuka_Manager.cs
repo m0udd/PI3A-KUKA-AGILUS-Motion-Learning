@@ -8,9 +8,9 @@ using System.IO;
 using NLX.Robot.Kuka.Controller;
 
 
-namespace Projet_Kuka
+namespace WindowsFormsApplication2
 {
-    class Class_Kuka_Manager
+    public class Class_Kuka_Manager
     {
         XMLManager xml = new XMLManager();
         List<XMLManager.Target> ListOfTarget = new List<XMLManager.Target>();
@@ -486,76 +486,6 @@ namespace Projet_Kuka
                 }
 
             }
-            /*
-            public void New_Up_Pose_Piece(double TX, double TY)
-            {
-                List<CartesianPosition> position = new List<CartesianPosition>();
-                position.Add(new CartesianPosition
-                {
-                    X = TX,
-                    Y = TY,
-                    Z = 500.69,
-                    A = -95.68,
-                    B = 2.19,
-                    C = -89.63,
-                });
-
-                robot.PlayTrajectory(position);    
-            }
-
-            public void New_Pose_Piece(double TX, double TY)
-            {
-                List<CartesianPosition> position = new List<CartesianPosition>();
-                position.Add(new CartesianPosition
-                {
-                    X = TX,
-                    Y = TY,
-                    Z = 150.00,  // valeur a modifier si elle est correcte
-                    A = -79.57,
-                    B = -10.65,
-                    C = -89.63,
-                });
-
-                robot.PlayTrajectory(position);
-            }
-
-            public void Deplacer_All_Piece()
-            {
-                int longueur = 0;
-                int largeur = 0;
-                double largeurX = -32.15;
-                double largeurY = 38.26;
-                double longueurX = -53.55;
-                double longueurY = -44.68;
-
-                double TX = 937.01;
-                double TY = -265.49;
-
-                while(longueur < 4)
-                {
-
-                    TX = TX + (largeurX * largeur) + (longueurX * longueur);
-                    TY = TY + (largeurY * largeur) + (longueurY * longueur);
-
-                    Near_Magasin();
-                    Pick_Piece();
-                    Up_Piece();
-                    New_Up_Pose_Piece(TX, TY);
-                    New_Pose_Piece(TX, TY);
-                    New_Up_Pose_Piece(TX, TY);
-
-                    largeur++;
-
-                    if (largeur == 4)
-                    {
-                        largeur = 0;
-                        longueur++;
-                    }
-                }
-            }*/
         }
     }
 }
-
-
-
