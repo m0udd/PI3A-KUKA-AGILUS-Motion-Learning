@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NLX.Robot.Kuka.Controller;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication2

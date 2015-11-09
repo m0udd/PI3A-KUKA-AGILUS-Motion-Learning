@@ -12,20 +12,21 @@ namespace WindowsFormsApplication2
 {
     public partial class IndexConnect : Form
     {
-        public string ipAddress;
+        public string ipAddress = "192.168.1.1";
         public IndexConnect()
         {
             InitializeComponent();
+            textBox2.Text = ipAddress;
         }
         public void button1_Click(object sender, EventArgs e)
         {
-            Connection connect = new Connection();
-            connect.connect();
+            MainForm mainForm = new MainForm();
+            MainForm parentForm = Application.OpenForms["MainForm"] as MainForm;
             string ipAddress = textBox2.Text;
             Console.WriteLine(ipAddress); //Debug
+            mainForm.connectKuka(ipAddress);
             this.Visible = false;
-            MainForm form2 = new MainForm();
-            form2.Show();
+            mainForm.Show();
                         
         }
 
@@ -35,6 +36,11 @@ namespace WindowsFormsApplication2
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
         }

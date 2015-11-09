@@ -27,7 +27,6 @@ namespace WindowsFormsApplication2
         private void m_back_Click(object sender, EventArgs e)
         {
             MainForm parentForm = Application.OpenForms["Form2"] as MainForm;
-            parentForm.UnlockButton();
             this.Visible = false;
         }
 

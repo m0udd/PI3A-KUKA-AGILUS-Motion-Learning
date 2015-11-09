@@ -1,10 +1,12 @@
-﻿using System;
+﻿using NLX.Robot.Kuka.Controller;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,21 +14,42 @@ namespace WindowsFormsApplication2
 {
     public partial class MainForm : Form
     {
-        int i = 5;
-
-        private bool gripperState = false;
+        int i = 0;
         private bool pointState = false;
+        bool isInLearningMode = true;
+        Thread myThread;
+        Thread myThreadMove;
+
+        public Class_Kuka_Manager kuka;
+        public Class_Mouse mouse;
+
+
         public MainForm()
         {
+            kuka = new Class_Kuka_Manager();
+            mouse = new Class_Mouse(kuka);
             InitializeComponent();
             //ControlBox = false;
             this.MaximizeBox = false;
             pointStateShow();
         }
 
+
+
+        public void connectKuka(string ipAddress)
+        {
+            kuka.connectKuka(ipAddress);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-
+            mouse.connectMouse();
+            myThread = new Thread(new ThreadStart(mouse.Loop_Mouse));
+            myThread.Start();
+            m_playMotion.Enabled = false;
+            isInLearningMode = true;
+            m_stopLearning.Visible = true;
+            m_learning.Visible = false;
         }
 
         private void m_back_Click(object sender, EventArgs e)
@@ -38,46 +61,56 @@ namespace WindowsFormsApplication2
 
         private void m_keyboard_Click(object sender, EventArgs e)
         {
-            Keyboard keyboardWindow = new Keyboard();
-            keyboardWindow.Show();
-            m_keyboard.Enabled = false;
-        }
+            m_learning.Enabled = false;
+            m_stopLearning.Visible = false;
+            m_stopPlaying.Visible = true;
 
-        public void UnlockButton()
-        {
-            m_keyboard.Enabled = true;
+            myThreadMove = new Thread(new ThreadStart(kuka.Mode_Move));
+            myThreadMove.Start();
+            //Start Thread AutoMotion
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            switch(keyData)
-            {
-                case (Keys.E):
-                    gripperMouvement();
-                    break;
-                case (Keys.A):
-                    emergencyButton();
-                    break;
+            if (isInLearningMode) {
+                switch (keyData)
+                {
+                    case (Keys.G):
+                        kuka.changeGripperState();
+                        break;
+                    case (Keys.Space):
+                        emergencyButton();
+                        break;
+                    case (Keys.S):
+                        kuka.Save_Point(); //Save Points in XML file
+                        break;
+                    case (Keys.L):
+                        kuka.Save_Position(); //Learn points to kuka
+                        break;
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        public void gripperMouvement()
+        public void gripperMouvement(bool gripperState)
         {
             if (gripperState == false)
             {
-                Console.WriteLine("E pushed");
                 gripperOpened.Visible = true;
                 gripperClosed.Visible = false;
                 gripperState = true;
             }
             else
             {
-                Console.WriteLine("E pushed");
                 gripperOpened.Visible = false;
                 gripperClosed.Visible = true;
                 gripperState = false;
             }
+        }
+
+        private void updateGripper()
+        {
+
         }
 
         private void emergencyButton()
@@ -93,6 +126,9 @@ namespace WindowsFormsApplication2
             //emergency_pushed.Visible = false;
             //semergency.Visible = true;
             Console.WriteLine("emergencyButton end");
+
+            kuka.stopModeMove();
+            mouse.stopLoopMouse();
         }
 
         private void pointStateShow()
@@ -263,6 +299,38 @@ namespace WindowsFormsApplication2
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            CartesianPosition position = kuka.Donne_Position();
+            dataX.Text = position.X.ToString();
+            dataY.Text = position.Y.ToString();
+            dataZ.Text = position.Z.ToString();
+            dataA.Text = position.A.ToString();
+            dataB.Text = position.B.ToString();
+            dataC.Text = position.C.ToString();
+            gripperMouvement(!kuka.getGripperState());
+        }
+
+        private void m_stopLearning_Click(object sender, EventArgs e)
+        {
+            m_learning.Visible = true;
+            m_stopLearning.Visible = false;
+            m_playMotion.Enabled = true;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            m_stopPlaying.Visible = false;
+            m_playMotion.Enabled = true;
+            m_learning.Enabled = true;
+            kuka.stopModeMove();
         }
     }
 }
